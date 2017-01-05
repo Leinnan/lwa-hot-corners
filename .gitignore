@@ -27,3 +27,14 @@
 *.exe
 *.out
 *.app
+
+# My own
+/obj
+/bin
+/build
+/cmake-build-debug
+.vscode
+.codelite
+.idea
+*.project
+*.xcf
