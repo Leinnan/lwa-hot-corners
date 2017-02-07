@@ -30,8 +30,9 @@
         std::array<hc::Corner, 4> corners;
         std::array<unsigned int, 2> x_screen_size;
         std::array<int, 2> x_cursor_pos;
-        unsigned int last_active_corner;
-        unsigned int current_corner;
+        int last_active_corner;
+        int current_corner;
+		int detection_margin;
 
     };
 }

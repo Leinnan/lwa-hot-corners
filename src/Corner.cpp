@@ -19,4 +19,13 @@ namespace hc{
     void Corner::setCommand(const std::string &p_command) {
         Corner::command = p_command;
     }
+	void Corner::updateState(const unsigned int &p_cursor_x,const unsigned int &p_cursor_y, const int &p_detection_margin){
+		if(hc::getAbsValue(p_cursor_x -  this->pos_x) < p_detection_margin && 
+		   hc::getAbsValue(p_cursor_y -  this->pos_y) < p_detection_margin){
+				this->is_active = true;
+		}
+		else{
+				this->is_active = false;
+		}
+	}
 }
