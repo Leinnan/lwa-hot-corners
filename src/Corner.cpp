@@ -5,7 +5,6 @@
 #include "Corner.h"
 
 namespace hc{
-    Corner::Corner() {}
 
     void  Corner::setCornerPos(const unsigned int &p_x,const  unsigned int &p_y){
         this->pos_x = p_x;

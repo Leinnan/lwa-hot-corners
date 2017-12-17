@@ -12,28 +12,38 @@
 #include "Corner.h"
 
  namespace hc {
+     
+     const double TIME_DURATION = 2.0; 
+     
     class Manager {
     public:
-        Manager();
-        ~Manager() {};
-        void configure();
-        void update();
+        enum class State
+        {
+            IDLE,
+            CORNER_START,
+            CORNER_DONE
+        };
+                                    Manager();
+        void                        configure();
+        void                        start();
 
     private:
-        void updateScreenSize();
-        void configureCornersPos();
+        void                        updateScreenSize();
+        void                        configureCornersPos();
+        void                        changeState( const State &newState );
 
-        Display *x_display;
-        Window x_root_window;
-        Window x_ret_root;
-        Window x_ret_child;
-        std::array<hc::Corner, 4> corners;
+        Display                    *x_display;
+        Window                      x_root_window;
+        Window                      x_ret_root;
+        Window                      x_ret_child;
+        std::array<hc::Corner, 4>   corners;
         std::array<unsigned int, 2> x_screen_size;
-        std::array<int, 2> x_cursor_pos;
-        int last_active_corner;
-        int current_corner;
-		int detection_margin;
-
+        std::array<int, 2>          x_cursor_pos;
+        int                         last_active_corner;
+        int                         current_corner;
+		unsigned int                detection_margin;
+        State                       currentState;
+        double                      timeCounter;
     };
 }
 

@@ -14,8 +14,6 @@ namespace hc {
 	
     class Corner {
     public:
-        Corner();
-        ~Corner(){};
         void setCornerPos(const unsigned int &p_x,const unsigned int &p_y);
 		
 		
@@ -27,7 +25,7 @@ namespace hc {
         void setCommand(const std::string &p_command);
 
     private:
-        std::string command;
+        std::string command = "echo \"Hello world!\"";
         unsigned int pos_x;
         unsigned int pos_y;
         bool is_active;

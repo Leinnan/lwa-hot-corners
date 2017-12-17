@@ -5,10 +5,11 @@ set( PROJECT_NAME "X11HotCorner" )
 project(${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 11)
-set (CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
+set(DEBUG 1)
 
-
-set(SOURCE_FILES src/main.cpp src/Manager.cpp src/Manager.h src/Corner.cpp src/Corner.h)
+set(SOURCE_FILES src/main.cpp src/Manager.cpp src/Manager.h
+                 src/Corner.cpp src/Corner.h src/Utils.h)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 find_package(X11 REQUIRED)
