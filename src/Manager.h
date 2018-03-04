@@ -7,13 +7,16 @@
 
 #include <X11/Xlib.h>
 #include <array>
+#include <chrono>
 #include <stdlib.h>
 #include <stdio.h>
 #include "Corner.h"
 
+
  namespace hc {
-     
-     const double TIME_DURATION = 2.0; 
+
+    using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
+    const int DURATION_IN_MS = 500;
      
     class Manager {
     public:
@@ -43,7 +46,7 @@
         int                         current_corner;
 		unsigned int                detection_margin;
         State                       currentState;
-        double                      timeCounter;
+        TimePoint                   startTimeCounter;
     };
 }
 

@@ -6,7 +6,7 @@
 #include "Utils.h"
 #include <unistd.h>
 #include <iostream>
-
+#include <sstream>
 
 namespace hc{
     Manager::Manager()
@@ -26,11 +26,10 @@ namespace hc{
         {
             case State::CORNER_DONE:
                 last_active_corner = current_corner;
-                timeCounter = 0.0;
                 stateString = "State::CORNER_DONE";
                 break;
             case State::CORNER_START:
-                timeCounter = TIME_DURATION;
+                startTimeCounter = std::chrono::steady_clock::now();
                 stateString = "State::CORNER_START";
                 break;
             case State::IDLE:
@@ -115,12 +114,18 @@ namespace hc{
                 corners[current_corner].updateState( this->x_cursor_pos[0], this->x_cursor_pos[1], detection_margin);
                 if( corners[current_corner].isActive() )
                 {
-                    timeCounter -= 0.05;
-                    if( timeCounter < 0 )
+                    if( DURATION_IN_MS < hc::getTimeSinceMoment( startTimeCounter ) )
                     {
                         const auto command = corners[current_corner].getCommand();
                         hc::debugLog( "Execute command: " + command );
                         changeState( State::CORNER_DONE );
+                    }
+                    else
+                    {
+                        std::stringstream debugInfo;
+                        debugInfo << "Time since start: ";
+                        debugInfo << hc::getTimeSinceMoment(startTimeCounter);
+                        hc::debugLog( debugInfo.str() );
                     }
                 }
                 else
@@ -131,6 +136,13 @@ namespace hc{
             else if( currentState == State::CORNER_DONE )
             {
                 // ToDo
+                corners[current_corner].updateState( this->x_cursor_pos[0], this->x_cursor_pos[1], detection_margin);
+                if(!corners[current_corner].isActive())
+                {
+                    current_corner = -1;
+                    changeState( State::IDLE );
+                }
+                
             }
             usleep( 51221 );
         }
