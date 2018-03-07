@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 namespace hc{
     Manager::Manager()
@@ -54,7 +55,8 @@ namespace hc{
 		corners[2].setCornerPos(0,this->x_screen_size[1]);
 		corners[3].setCornerPos(this->x_screen_size[0],this->x_screen_size[1]);
 		detection_margin = 15;
-		
+        
+		readConfigFile();
     }
     void Manager::updateScreenSize() {
         Screen* m_screen_pointer = NULL;
@@ -135,7 +137,6 @@ namespace hc{
             }
             else if( currentState == State::CORNER_DONE )
             {
-                // ToDo
                 corners[current_corner].updateState( this->x_cursor_pos[0], this->x_cursor_pos[1], detection_margin);
                 if(!corners[current_corner].isActive())
                 {
@@ -148,4 +149,31 @@ namespace hc{
         }
         while( true );
 	}
+    
+    bool Manager::readConfigFile()
+    {
+        bool result = true;
+        std::ifstream configFile(m_configPath.c_str());
+        std::string oneLine;
+        
+        result &= configFile.good();
+        if(!result)
+            return result;
+
+        while(std::getline(configFile, oneLine))
+        {
+            const std::string value = getConfigParameterValue(oneLine);
+            const std::string name = getConfigParameterName(oneLine);
+
+            if( name == "top_left_command")
+                    corners[0].setCommand(value);
+            if( name == "top_right_command")
+                    corners[1].setCommand(value);
+            if( name == "bottom_left_command")
+                    corners[2].setCommand(value);
+            if( name == "bottom_right_command")
+                    corners[3].setCommand(value);
+        }
+        return result;
+    }
 }

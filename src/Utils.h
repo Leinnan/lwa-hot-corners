@@ -25,6 +25,14 @@ namespace hc
         return duration.count();
     }
     
+    std::string getConfigParameterName( const std::string s )
+    {
+        return s.substr(0, s.find("="));
+    }
+    std::string getConfigParameterValue( const std::string s )
+    {
+        return s.substr(s.find("=")+1);
+    }
 }
 
 #endif // X11HOTCORNER_UTILS_H

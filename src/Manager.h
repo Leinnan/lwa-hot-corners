@@ -34,6 +34,7 @@
         void                        updateScreenSize();
         void                        configureCornersPos();
         void                        changeState( const State &newState );
+        bool                        readConfigFile();
 
         Display                    *x_display;
         Window                      x_root_window;
@@ -47,6 +48,7 @@
 		unsigned int                detection_margin;
         State                       currentState;
         TimePoint                   startTimeCounter;
+        std::string                 m_configPath = "/home/piotr/.lwa-hot-corner.ini";
     };
 }
 
