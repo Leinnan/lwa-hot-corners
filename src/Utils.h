@@ -61,9 +61,10 @@ int getConfigParameterIntValue( const std::string& s )
 void executeCommand( const std::string &command )
 {
     debugLog( "Execute command: " + command );
-    std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
 
-    if (!pipe) throw std::runtime_error("popen() failed!");
+    const std::string commandToExecute = command + std::string("&");
+    std::system(commandToExecute.c_str());
+
 }
 
 }
