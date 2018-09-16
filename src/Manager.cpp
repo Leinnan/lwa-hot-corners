@@ -1,10 +1,10 @@
 //
 // Created by piotr on 05.01.17.
 //
-
 #include "Manager.h"
+
 #include "Utils.h"
-#include <unistd.h>
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -145,7 +145,7 @@ namespace hc{
                 }
                 
             }
-            usleep( 51221 );
+            hc::sleep( 512 );
         }
         while( true );
 	}

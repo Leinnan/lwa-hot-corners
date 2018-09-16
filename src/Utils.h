@@ -3,6 +3,7 @@
 #include <iostream>
 #include <time.h>
 #include <chrono>
+#include <thread>
 
 #define DEBUG 1
 
@@ -20,16 +21,21 @@ namespace hc
     
     int getTimeSinceMoment( TimePoint tp )
     {
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds> 
+        const auto duration = std::chrono::duration_cast<std::chrono::milliseconds> 
                     (std::chrono::steady_clock::now() - tp);
         return duration.count();
     }
     
-    std::string getConfigParameterName( const std::string s )
+    void sleep(const int& ms)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+    }
+    
+    std::string getConfigParameterName( const std::string& s )
     {
         return s.substr(0, s.find("="));
     }
-    std::string getConfigParameterValue( const std::string s )
+    std::string getConfigParameterValue( const std::string& s )
     {
         return s.substr(s.find("=")+1);
     }
