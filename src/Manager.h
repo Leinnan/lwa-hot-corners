@@ -1,4 +1,4 @@
- //
+//
 // Created by piotr on 05.01.17.
 //
 
@@ -13,41 +13,45 @@
 #include "Corner.h"
 
 
- namespace hc {
+namespace hc {
 
-    using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
-    const int DURATION_IN_MS = 500;
-     
-    class Manager {
-    public:
-        enum class State
-        {
-            IDLE,
-            CORNER_START,
-            CORNER_DONE
-        };
-                                    Manager();
-        void                        configure();
-        void                        start();
+using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
+const int DEFAULT_DURATION_IN_MS = 300;
+const int UPDATE_INTERVAL_IN_MS = 60;
 
-    private:
-        void                        updateScreenSize();
-        void                        configureCornersPos();
-        void                        changeState( const State &newState );
-
-        Display                    *x_display;
-        Window                      x_root_window;
-        Window                      x_ret_root;
-        Window                      x_ret_child;
-        std::array<hc::Corner, 4>   corners;
-        std::array<unsigned int, 2> x_screen_size;
-        std::array<int, 2>          x_cursor_pos;
-        int                         last_active_corner;
-        int                         current_corner;
-		unsigned int                detection_margin;
-        State                       currentState;
-        TimePoint                   startTimeCounter;
+class Manager {
+public:
+    enum class State
+    {
+        IDLE,
+        CORNER_START,
+        CORNER_DONE
     };
+    Manager();
+    void                        configure();
+    void                        start();
+
+private:
+    void                        updateScreenSize();
+    void                        configureCornersPos();
+    void                        changeState( const State &p_newState );
+    bool                        readConfigFile();
+
+    Display                    *m_xDisplay;
+    Window                      m_xRootWindow;
+    Window                      m_xRetRoot;
+    Window                      m_xRetChild;
+    std::array<hc::Corner, 4>   m_corners;
+    std::array<unsigned int, 2> m_xScreenSize;
+    std::array<int, 2>          m_xCursorPos;
+    int                         m_lastActiveCorner;
+    int                         m_currentCorner;
+    unsigned int                m_detectionMargin;
+    int                         m_holdDuration;
+    State                       m_currentState;
+    TimePoint                   m_startTimeCounter;
+    std::string                 m_configPath = "/home/piotr/.lwa-hot-corner.cfg";
+};
 }
 
 
