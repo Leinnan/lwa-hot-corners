@@ -1,7 +1,6 @@
 #ifndef X11HOTCORNER_UTILS_H
 #define X11HOTCORNER_UTILS_H
 #include <iostream>
-#include <time.h>
 #include <chrono>
 #include <thread>
 

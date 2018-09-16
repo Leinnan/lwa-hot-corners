@@ -19,16 +19,16 @@ namespace hc {
 		
 
         const std::string &getCommand() const;
-		bool isActive(){return this->is_active;};
+		bool isActive(){return m_isActive;};
 		void updateState(const unsigned int &cursor_x,const unsigned int &cursor_y, const int &p_detection_margin);
 
         void setCommand(const std::string &p_command);
 
     private:
-        std::string command = "echo \"Hello world!\"";
-        unsigned int pos_x;
-        unsigned int pos_y;
-        bool is_active;
+        std::string m_command = "echo \"Hello world!\"";
+        unsigned int m_posX;
+        unsigned int m_posY;
+        bool m_isActive;
     };
 
 }

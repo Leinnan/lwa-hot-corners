@@ -7,24 +7,20 @@
 namespace hc{
 
     void  Corner::setCornerPos(const unsigned int &p_x,const  unsigned int &p_y){
-        this->pos_x = p_x;
-        this->pos_y = p_y;
+        m_posX = p_x;
+        m_posY = p_y;
     }
 
     const std::string &Corner::getCommand() const {
-        return command;
+        return m_command;
     }
 
     void Corner::setCommand(const std::string &p_command) {
-        Corner::command = p_command;
+        m_command = p_command;
     }
-	void Corner::updateState(const unsigned int &p_cursor_x,const unsigned int &p_cursor_y, const int &p_detection_margin){
-		if(hc::getAbsValue(p_cursor_x -  this->pos_x) < p_detection_margin && 
-		   hc::getAbsValue(p_cursor_y -  this->pos_y) < p_detection_margin){
-				this->is_active = true;
-		}
-		else{
-				this->is_active = false;
-		}
+    
+	void Corner::updateState(const unsigned int &p_cursorX,const unsigned int &p_cursorY, const int &p_detectionMargin){
+		m_isActive = (hc::getAbsValue(p_cursorX -  m_posX) < p_detectionMargin && 
+		   hc::getAbsValue(p_cursorY -  m_posY) < p_detectionMargin);
 	}
 }

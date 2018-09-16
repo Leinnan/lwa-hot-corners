@@ -5,7 +5,6 @@
 
 #include "Utils.h"
 
-#include <iostream>
 #include <sstream>
 #include <fstream>
 
@@ -13,131 +12,130 @@ namespace hc{
     Manager::Manager()
     {
         hc::debugLog( "Init" );
-        configure();
-        start();
     }
     
-    void Manager::changeState( const State &newState )
+    void Manager::changeState( const State &p_newState )
     {
-        if( newState == currentState )
+        if( p_newState == m_currentState )
             return;
             
         std::string stateString;
-        switch( newState )
+        switch( p_newState )
         {
             case State::CORNER_DONE:
-                last_active_corner = current_corner;
+                m_lastActiveCorner = m_currentCorner;
                 stateString = "State::CORNER_DONE";
                 break;
             case State::CORNER_START:
-                startTimeCounter = std::chrono::steady_clock::now();
+                m_startTimeCounter = std::chrono::steady_clock::now();
                 stateString = "State::CORNER_START";
                 break;
             case State::IDLE:
-                last_active_corner = current_corner;
+                m_lastActiveCorner = m_currentCorner;
                 stateString = "State::IDLE";
-                current_corner = -1;
+                m_currentCorner = -1;
                 break;
         }
-        currentState = newState;
+        m_currentState = p_newState;
+        
         hc::debugLog("Switched state to " + stateString );
     }
     
     void Manager::configure() 
     {
-
-        this->x_display = XOpenDisplay(NULL);
-        this->x_root_window = XDefaultRootWindow(this->x_display);
-        this->updateScreenSize();
+        m_xDisplay = XOpenDisplay(NULL);
+        m_xRootWindow = XDefaultRootWindow(m_xDisplay);
+        updateScreenSize();
 		
-		corners[0].setCornerPos(0,0);
-		corners[1].setCornerPos(this->x_screen_size[0],0);
-		corners[2].setCornerPos(0,this->x_screen_size[1]);
-		corners[3].setCornerPos(this->x_screen_size[0],this->x_screen_size[1]);
-		detection_margin = 15;
+		m_corners[0].setCornerPos(0,0);
+		m_corners[1].setCornerPos(m_xScreenSize[0],0);
+		m_corners[2].setCornerPos(0,m_xScreenSize[1]);
+		m_corners[3].setCornerPos(m_xScreenSize[0],m_xScreenSize[1]);
+		m_detectionMargin = 15;
         
 		readConfigFile();
     }
     void Manager::updateScreenSize() {
-        Screen* m_screen_pointer = NULL;
-
-
-        m_screen_pointer = DefaultScreenOfDisplay( this->x_display );
-        if ( !m_screen_pointer ) {
+        Screen* screenPtr = DefaultScreenOfDisplay( m_xDisplay );
+        
+        if ( !screenPtr ) {
             hc::errorLog( "Failed to obtain the default screen of given display.\n" );
             return;
         }
 
-        x_screen_size[0] = static_cast< unsigned int >( m_screen_pointer->width );
-        x_screen_size[1] = static_cast< unsigned int >( m_screen_pointer->height );
+        m_xScreenSize[0] = static_cast< unsigned int >( screenPtr->width );
+        m_xScreenSize[1] = static_cast< unsigned int >( screenPtr->height );
+        
         if(hc::isDebugMode())
         {
             std::string log = "Screen resolution is ";
-            log += std::to_string( this->x_screen_size[0] );
+            log += std::to_string( this->m_xScreenSize[0] );
             log += 'x';
-            log += std::to_string( this->x_screen_size[1] );
+            log += std::to_string( this->m_xScreenSize[1] );
             hc::debugLog(log);
         }
     }
 
     void Manager::start() {
-        currentState = State::IDLE;
+        m_currentState = State::IDLE;
         int m_empty;
         unsigned int m_mask;
         do
         {
-            XQueryPointer(this->x_display, this->x_root_window, &this->x_ret_root,
-                          &this->x_ret_child, &this->x_cursor_pos[0],
-                          &this->x_cursor_pos[1],&m_empty, &m_empty, &m_mask);
+            XQueryPointer(m_xDisplay, m_xRootWindow, &m_xRetRoot,
+                          &m_xRetChild, &m_xCursorPos[0],
+                          &m_xCursorPos[1],&m_empty, &m_empty, &m_mask);
             
             // if current counter is not  equal to -1 then is active 
-            if(current_corner != -1){
-                this->last_active_corner = this->current_corner; 
+            if(m_currentCorner != -1){
+                m_lastActiveCorner = m_currentCorner; 
             }
             
-            // now lets get is this any of the corners
-            if( currentState == State::IDLE )
+            // now lets get is this any of the m_corners
+            if( m_currentState == State::IDLE )
             {
                 if(hc::isDebugMode())
                 {
                     std::stringstream ss;
-                    ss << this->x_cursor_pos[0] << "x" << this->x_cursor_pos[1];
+                    ss << m_xCursorPos[0] << "x" << m_xCursorPos[1];
                     hc::debugLog(ss.str());
                 }
                 int m_counter = 0;
-                current_corner = -1;
+                m_currentCorner = -1;
                 
-                for(auto& corner : corners){
-                    corner.updateState( this->x_cursor_pos[0], this->x_cursor_pos[1], detection_margin);
+                for(auto& corner : m_corners){
+                    corner.updateState( m_xCursorPos[0], m_xCursorPos[1], m_detectionMargin);
+                    
                     if(corner.isActive())
                     {
-                        current_corner = m_counter;
+                        m_currentCorner = m_counter;
                         changeState( State::CORNER_START );
                     }
+                    
                     m_counter++;
                 }
-                if(current_corner != -1 && hc::isDebugMode()){
+                if(m_currentCorner != -1 && hc::isDebugMode()){
                     std::stringstream ss;
-                    ss << "Current corner is this: " << this->current_corner;
+                    ss << "Current corner is this: " << m_currentCorner;
                     hc::debugLog(ss.str());
                 }
             }
-            else if( currentState == State::CORNER_START )
+            else if( m_currentState == State::CORNER_START )
             {
-                corners[current_corner].updateState( this->x_cursor_pos[0], this->x_cursor_pos[1], detection_margin);
-                if( corners[current_corner].isActive() )
+                m_corners[m_currentCorner].updateState( m_xCursorPos[0], m_xCursorPos[1], m_detectionMargin);
+                
+                if( m_corners[m_currentCorner].isActive() )
                 {
-                    if( DURATION_IN_MS < hc::getTimeSinceMoment( startTimeCounter ) )
+                    if( DURATION_IN_MS < hc::getTimeSinceMoment( m_startTimeCounter ) )
                     {
-                        const auto command = corners[current_corner].getCommand();
-                        hc::debugLog( "Execute command: " + command );
+                        hc::debugLog( "Execute command: " + m_corners[m_currentCorner].getCommand() );
                         changeState( State::CORNER_DONE );
                     }
                     else
                     {
                         std::stringstream debugInfo;
                         debugInfo << "Time since start: ";
-                        debugInfo << hc::getTimeSinceMoment(startTimeCounter);
+                        debugInfo << hc::getTimeSinceMoment(m_startTimeCounter);
                         hc::debugLog( debugInfo.str() );
                     }
                 }
@@ -146,15 +144,15 @@ namespace hc{
                     changeState( State::IDLE );
                 }
             }
-            else if( currentState == State::CORNER_DONE )
+            else if( m_currentState == State::CORNER_DONE )
             {
-                corners[current_corner].updateState( this->x_cursor_pos[0], this->x_cursor_pos[1], detection_margin);
-                if(!corners[current_corner].isActive())
+                m_corners[m_currentCorner].updateState( m_xCursorPos[0], m_xCursorPos[1], m_detectionMargin );
+                
+                if(!m_corners[m_currentCorner].isActive())
                 {
-                    current_corner = -1;
+                    m_currentCorner = -1;
                     changeState( State::IDLE );
                 }
-                
             }
             hc::sleep( DURATION_IN_MS );
         }
@@ -175,13 +173,13 @@ namespace hc{
             const auto name = getConfigParameterName(oneLine);
 
             if( name == "top_left_command")
-                    corners[0].setCommand(value);
+                    m_corners[0].setCommand(value);
             else if( name == "top_right_command")
-                    corners[1].setCommand(value);
+                    m_corners[1].setCommand(value);
             else if( name == "bottom_left_command")
-                    corners[2].setCommand(value);
+                    m_corners[2].setCommand(value);
             else if( name == "bottom_right_command")
-                    corners[3].setCommand(value);
+                    m_corners[3].setCommand(value);
         }
         return true;
     }
