@@ -152,28 +152,26 @@ namespace hc{
     
     bool Manager::readConfigFile()
     {
-        bool result = true;
         std::ifstream configFile(m_configPath.c_str());
         std::string oneLine;
-        
-        result &= configFile.good();
-        if(!result)
-            return result;
+                
+        if(!configFile.good())
+            return false;
 
         while(std::getline(configFile, oneLine))
         {
-            const std::string value = getConfigParameterValue(oneLine);
-            const std::string name = getConfigParameterName(oneLine);
+            const auto value = getConfigParameterValue(oneLine);
+            const auto name = getConfigParameterName(oneLine);
 
             if( name == "top_left_command")
                     corners[0].setCommand(value);
-            if( name == "top_right_command")
+            else if( name == "top_right_command")
                     corners[1].setCommand(value);
-            if( name == "bottom_left_command")
+            else if( name == "bottom_left_command")
                     corners[2].setCommand(value);
-            if( name == "bottom_right_command")
+            else if( name == "bottom_right_command")
                     corners[3].setCommand(value);
         }
-        return result;
+        return true;
     }
 }
