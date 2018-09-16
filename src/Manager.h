@@ -48,7 +48,7 @@ private:
     unsigned int                m_detectionMargin;
     State                       m_currentState;
     TimePoint                   m_startTimeCounter;
-    std::string                 m_configPath = "/home/piotr/.lwa-hot-corner.ini";
+    std::string                 m_configPath = "/home/piotr/.lwa-hot-corner.cfg";
 };
 }
 

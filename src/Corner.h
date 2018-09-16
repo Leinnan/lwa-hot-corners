@@ -27,7 +27,7 @@ public:
     void setCommand(const std::string &p_command);
 
 private:
-    std::string m_command = "echo \"Hello world!\"";
+    std::string m_command = "geany";
     unsigned int m_posX;
     unsigned int m_posY;
     bool m_isActive;

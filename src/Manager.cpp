@@ -53,7 +53,16 @@ void Manager::configure()
     m_corners[3].setCornerPos(m_xScreenSize[0],m_xScreenSize[1]);
     m_detectionMargin = 15;
 
-    readConfigFile();
+    const bool configReaded = readConfigFile();
+
+    if(hc::isDebugMode())
+    {
+        std::stringstream ss;
+        ss << "Reading config ended with "
+           << ( configReaded ? "succes" : "failure" ) << std::endl;
+        hc::debugLog( ss.str() );
+    }
+    m_currentState = State::IDLE;
 }
 void Manager::updateScreenSize() {
     Screen* screenPtr = DefaultScreenOfDisplay( m_xDisplay );
@@ -77,16 +86,16 @@ void Manager::updateScreenSize() {
 }
 
 void Manager::start() {
-    m_currentState = State::IDLE;
-    int m_empty;
-    unsigned int m_mask;
+    int tmp;
+    unsigned int utmp;
+
     do
     {
         XQueryPointer(m_xDisplay, m_xRootWindow, &m_xRetRoot,
                       &m_xRetChild, &m_xCursorPos[0],
-                      &m_xCursorPos[1],&m_empty, &m_empty, &m_mask);
+                      &m_xCursorPos[1], &tmp, &tmp, &utmp);
 
-        // if current counter is not  equal to -1 then is active
+        // if current counter is not equal to -1 then is active
         if(m_currentCorner != -1) {
             m_lastActiveCorner = m_currentCorner;
         }
@@ -128,7 +137,7 @@ void Manager::start() {
             {
                 if( DURATION_IN_MS < hc::getTimeSinceMoment( m_startTimeCounter ) )
                 {
-                    hc::debugLog( "Execute command: " + m_corners[m_currentCorner].getCommand() );
+                    hc::executeCommand( m_corners[m_currentCorner].getCommand() );
                     changeState( State::CORNER_DONE );
                 }
                 else

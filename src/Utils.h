@@ -1,8 +1,11 @@
 #ifndef X11HOTCORNER_UTILS_H
 #define X11HOTCORNER_UTILS_H
-#include <iostream>
+#include <cstdio>
 #include <chrono>
+#include <iostream>
+#include <memory>
 #include <thread>
+#include <stdexcept>
 
 #define DEBUG 1
 
@@ -44,10 +47,20 @@ std::string getConfigParameterName( const std::string& s )
 {
     return s.substr(0, s.find("="));
 }
+
 std::string getConfigParameterValue( const std::string& s )
 {
     return s.substr(s.find("=")+1);
 }
+
+void executeCommand( const std::string &command )
+{
+    debugLog( "Execute command: " + command );
+    std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
+
+    if (!pipe) throw std::runtime_error("popen() failed!");
+}
+
 }
 
 #endif // X11HOTCORNER_UTILS_H
