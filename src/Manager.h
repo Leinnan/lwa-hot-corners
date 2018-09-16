@@ -16,7 +16,8 @@
 namespace hc {
 
 using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
-const int DURATION_IN_MS = 500;
+const int DURATION_IN_MS = 300;
+const int UPDATE_INTERVAL_IN_MS = 80;
 
 class Manager {
 public:

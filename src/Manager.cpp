@@ -163,7 +163,7 @@ void Manager::start() {
                 changeState( State::IDLE );
             }
         }
-        hc::sleep( DURATION_IN_MS );
+        hc::sleep( UPDATE_INTERVAL_IN_MS );
     }
     while( true );
 }
