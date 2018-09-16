@@ -30,6 +30,7 @@ public:
     Manager();
     void                        configure();
     void                        start();
+    void                        setConfigPath( const std::string &p_path );
 
 private:
     void                        updateScreenSize();
@@ -50,7 +51,7 @@ private:
     int                         m_holdDuration;
     State                       m_currentState;
     TimePoint                   m_startTimeCounter;
-    std::string                 m_configPath = "/home/piotr/.lwa-hot-corner.cfg";
+    std::string                 m_configPath;
 };
 }
 

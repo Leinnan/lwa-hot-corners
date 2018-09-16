@@ -168,6 +168,11 @@ void Manager::start() {
     while( true );
 }
 
+void Manager::setConfigPath( const std::string &p_path )
+{
+    m_configPath = p_path;
+}
+
 bool Manager::readConfigFile()
 {
     std::ifstream configFile(m_configPath.c_str());
