@@ -53,6 +53,11 @@ std::string getConfigParameterValue( const std::string& s )
     return s.substr(s.find("=")+1);
 }
 
+int getConfigParameterIntValue( const std::string& s )
+{
+    return std::stoi( getConfigParameterValue(s) );
+}
+
 void executeCommand( const std::string &command )
 {
     debugLog( "Execute command: " + command );

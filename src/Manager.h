@@ -16,8 +16,8 @@
 namespace hc {
 
 using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
-const int DURATION_IN_MS = 300;
-const int UPDATE_INTERVAL_IN_MS = 80;
+const int DEFAULT_DURATION_IN_MS = 300;
+const int UPDATE_INTERVAL_IN_MS = 60;
 
 class Manager {
 public:
@@ -47,6 +47,7 @@ private:
     int                         m_lastActiveCorner;
     int                         m_currentCorner;
     unsigned int                m_detectionMargin;
+    int                         m_holdDuration;
     State                       m_currentState;
     TimePoint                   m_startTimeCounter;
     std::string                 m_configPath = "/home/piotr/.lwa-hot-corner.cfg";
