@@ -12,11 +12,21 @@ namespace hc
     using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
     const char APP_TAG[]  = "X11_HotCorner";
     
+    bool isDebugMode()
+    {
+        return DEBUG;
+    } 
+    
     void debugLog( const std::string &s )
     {
-#if DEBUG
+        if(!isDebugMode())
+            return;
         std::clog << '[' << APP_TAG << ']' << s << '\n';
-#endif
+    }
+    
+    void errorLog( const std::string &s )
+    {
+        std::cerr << "[" << APP_TAG << "]" << s << '\n';
     }
     
     int getTimeSinceMoment( TimePoint tp )

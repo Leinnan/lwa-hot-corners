@@ -64,17 +64,20 @@ namespace hc{
 
         m_screen_pointer = DefaultScreenOfDisplay( this->x_display );
         if ( !m_screen_pointer ) {
-            fprintf(stderr, "Failed to obtain the default screen of given display.\n");
+            hc::errorLog( "Failed to obtain the default screen of given display.\n" );
             return;
         }
 
         x_screen_size[0] = static_cast< unsigned int >( m_screen_pointer->width );
         x_screen_size[1] = static_cast< unsigned int >( m_screen_pointer->height );
-        std::string log = "Screen resolution is ";
-        log += std::to_string( this->x_screen_size[0] );
-        log += 'x';
-        log += std::to_string( this->x_screen_size[1] );
-        hc::debugLog(log);
+        if(hc::isDebugMode())
+        {
+            std::string log = "Screen resolution is ";
+            log += std::to_string( this->x_screen_size[0] );
+            log += 'x';
+            log += std::to_string( this->x_screen_size[1] );
+            hc::debugLog(log);
+        }
     }
 
     void Manager::start() {
@@ -95,10 +98,16 @@ namespace hc{
             // now lets get is this any of the corners
             if( currentState == State::IDLE )
             {
-                printf("+%d+%d\n", this->x_cursor_pos[0], this->x_cursor_pos[1]);
+                if(hc::isDebugMode())
+                {
+                    std::stringstream ss;
+                    ss << this->x_cursor_pos[0] << "x" << this->x_cursor_pos[1];
+                    hc::debugLog(ss.str());
+                }
                 int m_counter = 0;
                 current_corner = -1;
-                for(auto corner : corners){
+                
+                for(auto& corner : corners){
                     corner.updateState( this->x_cursor_pos[0], this->x_cursor_pos[1], detection_margin);
                     if(corner.isActive())
                     {
@@ -107,8 +116,10 @@ namespace hc{
                     }
                     m_counter++;
                 }
-                if(current_corner != -1){
-                    printf("Current corner is this: +%d\n", this->current_corner);
+                if(current_corner != -1 && hc::isDebugMode()){
+                    std::stringstream ss;
+                    ss << "Current corner is this: " << this->current_corner;
+                    hc::debugLog(ss.str());
                 }
             }
             else if( currentState == State::CORNER_START )
@@ -145,7 +156,7 @@ namespace hc{
                 }
                 
             }
-            hc::sleep( 512 );
+            hc::sleep( DURATION_IN_MS );
         }
         while( true );
 	}
