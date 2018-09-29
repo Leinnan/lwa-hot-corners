@@ -7,6 +7,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <X11/Xatom.h>
 
 
 static int handleError(Display* display, XErrorEvent* error)
@@ -147,7 +148,9 @@ void Manager::start() {
             {
                 if( m_holdDuration < hc::getTimeSinceMoment( m_startTimeCounter ) )
                 {
-                    hc::executeCommand( m_corners[m_currentCorner].getCommand() );
+                    if(m_disableOnFullscreen &&!isActiveWindowFullscreen())
+                        hc::executeCommand( m_corners[m_currentCorner].getCommand() );
+
                     changeState( State::CORNER_DONE );
                 }
                 else
@@ -224,7 +227,7 @@ Window Manager::getActiveWindow()
     XGetInputFocus(m_xDisplay, &window, &revert_to); // see man
     if(xError || window == None){
         hc::debugLog((window == None) ? "no focus window\n" : "");
-        return -1;
+        return 0;
     }else{
         std::stringstream ss;
 
@@ -233,5 +236,23 @@ Window Manager::getActiveWindow()
     }
 
     return window;
+}
+
+bool Manager::isActiveWindowFullscreen()
+{
+    auto window = getActiveWindow();
+
+    XFlush(m_xDisplay);
+    XWindowAttributes wa;
+    XGetWindowAttributes(m_xDisplay,window,&wa);
+    std::stringstream ss;
+    ss << wa.width << "x";
+    ss << wa.height  << '\n';
+    const bool isFullscreen = (m_xScreenSize[0] == wa.width
+                               && m_xScreenSize[1] == wa.height);
+
+    hc::debugLog( isFullscreen ? "Is fullscreen" : "Is not fullscreen" );
+
+    return isFullscreen;
 }
 }

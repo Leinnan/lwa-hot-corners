@@ -40,6 +40,7 @@ private:
     void                        changeState( const State &p_newState );
     bool                        readConfigFile();
     Window                      getActiveWindow();
+    bool                        isActiveWindowFullscreen();
 
     Display                    *m_xDisplay;
     Window                      m_xRootWindow;
@@ -55,6 +56,7 @@ private:
     State                       m_currentState;
     TimePoint                   m_startTimeCounter;
     std::string                 m_configPath;
+    bool                        m_disableOnFullscreen = true;
 };
 }
 
