@@ -8,7 +8,7 @@ CXXFLAGS := -c -std=c++11 -O2 -march=native -Wall -Wextra -pedantic
 LD := g++
 LDFLAGS := -std=gnu++11 -lX11
 
-NAME := LWAHotCorner
+NAME := lwa-hot-corners
 SRCDIR := src
 OBJDIR := obj
 
