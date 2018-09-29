@@ -148,7 +148,10 @@ void Manager::start() {
             {
                 if( m_holdDuration < hc::getTimeSinceMoment( m_startTimeCounter ) )
                 {
-                    if(m_disableOnFullscreen &&!isActiveWindowFullscreen())
+                    const bool canExecute = m_disableOnFullscreen ?
+                                             !isActiveWindowFullscreen() :
+                                             true;
+                    if(canExecute)
                         hc::executeCommand( m_corners[m_currentCorner].getCommand() );
 
                     changeState( State::CORNER_DONE );
@@ -211,6 +214,8 @@ bool Manager::readConfigFile()
             m_corners[3].setCommand(value);
         else if( name == "hold_duration")
             m_holdDuration = getConfigParameterIntValue(oneLine);
+        else if( name == "enable_on_fullscreen")
+            m_disableOnFullscreen = !stringToBool(value);
     }
 
     if(m_holdDuration == -1)
@@ -241,6 +246,12 @@ Window Manager::getActiveWindow()
 bool Manager::isActiveWindowFullscreen()
 {
     auto window = getActiveWindow();
+
+    if( window <= 0 )
+    {
+        hc::debugLog("No active window found");
+        return false;
+    }
 
     XFlush(m_xDisplay);
     XWindowAttributes wa;

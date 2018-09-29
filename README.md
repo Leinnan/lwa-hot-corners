@@ -23,4 +23,5 @@ top_right_command=twm-session-logout
 bottom_left_command=firefox
 bottom_right_command=orage
 hold_duration=500
+disable_on_fullscreen=false
 ```

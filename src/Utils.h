@@ -6,6 +6,7 @@
 #include <memory>
 #include <thread>
 #include <stdexcept>
+#include <algorithm>
 
 #define DEBUG 1
 
@@ -67,6 +68,15 @@ void executeCommand( const std::string &command )
 
 }
 
+bool stringToBool( const std::string &s )
+{
+    static std::array<std::string,3> stringTrue = {"true", "True", "TRUE"};
+
+    return std::any_of(stringTrue.begin(),stringTrue.end(),
+        [s](std::string& el){
+            return (s.find(el) != std::string::npos);
+        });
+}
 }
 
 #endif // X11HOTCORNER_UTILS_H
