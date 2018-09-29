@@ -4,7 +4,7 @@ ifndef PREFIX
   PREFIX=/usr
 endif
 CXX := g++
-CXXFLAGS := -c -std=c++11  -Wall -Wextra -pedantic
+CXXFLAGS := -c -std=c++11 -O2 -march=native -Wall -Wextra -pedantic
 LD := g++
 LDFLAGS := -std=gnu++11 -lX11
 
@@ -23,7 +23,6 @@ all: $(EXE)
 clean:
 	rm -rf $(OBJDIR)
 	rm -f $(EXE) main.o
-	
 
 install:
 	install -m 755 -D $(EXE) $(DESTDIR)$(PREFIX)/bin/$(EXE)
