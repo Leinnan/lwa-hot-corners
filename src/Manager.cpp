@@ -8,6 +8,14 @@
 #include <sstream>
 #include <fstream>
 
+
+static int handleError(Display* display, XErrorEvent* error)
+{
+    xError = true;
+    hc::errorLog("X11: error occured");
+    return 1;
+}
+
 namespace hc {
 Manager::Manager()
 {
@@ -44,6 +52,7 @@ void Manager::changeState( const State &p_newState )
 void Manager::configure()
 {
     m_xDisplay = XOpenDisplay(NULL);
+    XSetErrorHandler(handleError);
     m_xRootWindow = XDefaultRootWindow(m_xDisplay);
     updateScreenSize();
 
@@ -64,6 +73,7 @@ void Manager::configure()
     }
     m_currentState = State::IDLE;
 }
+
 void Manager::updateScreenSize() {
     Screen* screenPtr = DefaultScreenOfDisplay( m_xDisplay );
 
@@ -204,5 +214,24 @@ bool Manager::readConfigFile()
         m_holdDuration = DEFAULT_DURATION_IN_MS;
 
     return true;
+}
+
+Window Manager::getActiveWindow()
+{
+    Window window;
+    int revert_to = -1;
+
+    XGetInputFocus(m_xDisplay, &window, &revert_to); // see man
+    if(xError || window == None){
+        hc::debugLog((window == None) ? "no focus window\n" : "");
+        return -1;
+    }else{
+        std::stringstream ss;
+
+        ss << "success (window: "<<(int)window <<")\n";
+        hc::debugLog(ss.str());
+    }
+
+    return window;
 }
 }

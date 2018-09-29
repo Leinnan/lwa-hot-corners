@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include "Corner.h"
 
+static int                  handleError(Display* display, XErrorEvent* error);
+static bool xError = false;
 
 namespace hc {
 
@@ -37,6 +39,7 @@ private:
     void                        configureCornersPos();
     void                        changeState( const State &p_newState );
     bool                        readConfigFile();
+    Window                      getActiveWindow();
 
     Display                    *m_xDisplay;
     Window                      m_xRootWindow;

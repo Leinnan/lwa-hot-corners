@@ -21,7 +21,7 @@ bool isDebugMode()
 
 void debugLog( const std::string &s )
 {
-    if(!isDebugMode())
+    if(!isDebugMode() || s.empty())
         return;
     std::clog << '[' << APP_TAG << ']' << s << '\n';
 }
