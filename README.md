@@ -13,7 +13,7 @@ sudo make install
 ## Config file
 
 When you run the program you need to pass path to your config file. Config file can contain information about command to execute for corners and hold duration(in ms) before command is executed. 
-
+If you do not want to have command for corner just skip line in config.
 
 Example file:
 
