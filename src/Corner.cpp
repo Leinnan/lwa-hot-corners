@@ -16,6 +16,7 @@ const std::string &Corner::getCommand() const {
 }
 
 void Corner::setCommand(const std::string &p_command) {
+    m_hasCommand = p_command.length() > 0;
     m_command = p_command;
 }
 

@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <algorithm>
 
-#define DEBUG 1
+#define DEBUG 0
 
 namespace hc
 {

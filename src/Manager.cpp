@@ -126,7 +126,7 @@ void Manager::start() {
             for(auto& corner : m_corners) {
                 corner.updateState( m_xCursorPos[0], m_xCursorPos[1], m_detectionMargin);
 
-                if(corner.isActive())
+                if(corner.isActive() && corner.hasCommand())
                 {
                     m_currentCorner = m_counter;
                     changeState( State::CORNER_START );
