@@ -1,7 +1,3 @@
-//
-// Created by piotr on 05.01.17.
-//
-
 #ifndef X11HOTCORNER_MANAGER_H
 #define X11HOTCORNER_MANAGER_H
 
@@ -19,7 +15,7 @@ namespace hc {
 
 using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
 const int DEFAULT_DURATION_IN_MS = 300;
-const int UPDATE_INTERVAL_IN_MS = 60;
+const int DEFAULT_UPDATE_INTERVAL_IN_MS = 200;
 
 class Manager {
 public:
@@ -52,7 +48,8 @@ private:
     int                         m_lastActiveCorner;
     int                         m_currentCorner;
     unsigned int                m_detectionMargin;
-    int                         m_holdDuration;
+    int                         m_holdDuration = DEFAULT_DURATION_IN_MS;
+    int                         m_updateInterval = DEFAULT_UPDATE_INTERVAL_IN_MS;
     State                       m_currentState;
     TimePoint                   m_startTimeCounter;
     std::string                 m_configPath;

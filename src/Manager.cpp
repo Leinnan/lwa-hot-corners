@@ -179,7 +179,7 @@ void Manager::start() {
                 changeState( State::IDLE );
             }
         }
-        hc::sleep( UPDATE_INTERVAL_IN_MS );
+        hc::sleep( m_updateInterval );
     }
     while( true );
 }
@@ -197,8 +197,6 @@ bool Manager::readConfigFile()
     if(!configFile.good())
         return false;
 
-    m_holdDuration = -1;
-
     while(std::getline(configFile, oneLine))
     {
         const auto value = getConfigParameterValue(oneLine);
@@ -214,12 +212,16 @@ bool Manager::readConfigFile()
             m_corners[3].setCommand(value);
         else if( name == "hold_duration")
             m_holdDuration = getConfigParameterIntValue(oneLine);
+        else if( name == "update_interval")
+            m_updateInterval = getConfigParameterIntValue(oneLine);
         else if( name == "enable_on_fullscreen")
             m_disableOnFullscreen = !stringToBool(value);
     }
 
-    if(m_holdDuration == -1)
+    if(m_holdDuration < 0)
         m_holdDuration = DEFAULT_DURATION_IN_MS;
+    if(m_updateInterval < 0)
+        m_updateInterval = DEFAULT_UPDATE_INTERVAL_IN_MS;
 
     return true;
 }
